@@ -1,5 +1,6 @@
-import { todoActions } from "./reducers/todoSlice";
+import { todoActions, todoExtraReducer } from "./reducers/todoSlice";
 
 export const AllActionCreators = {
   ...todoActions,
+  ...todoExtraReducer,
 };

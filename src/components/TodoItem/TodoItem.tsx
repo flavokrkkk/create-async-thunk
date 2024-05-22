@@ -25,7 +25,6 @@ const TodoItem: FC<TodoItemProps> = ({ id, title, completed }) => {
   const toggleCompleteTodo = () => {
     setCompletedTodo(id);
   };
-
   return (
     <Card key={id} className=" mb-4">
       <CardHeader
