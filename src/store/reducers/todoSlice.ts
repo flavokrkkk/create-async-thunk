@@ -1,5 +1,5 @@
 import {
-  Dispatch,
+  AnyAction,
   PayloadAction,
   createAsyncThunk,
   createSlice,
@@ -66,6 +66,21 @@ export const toggleTodoComplete = createAsyncThunk<
   }
 });
 
+export const deleteAsyncTodo = createAsyncThunk(
+  "todos/deleteAsyncTodo",
+  async (id: number, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.delete(
+        `https://jsonplaceholder.typicode.com/todos/${id}`
+      );
+      console.log(data);
+      return id;
+    } catch (err) {
+      rejectWithValue(`${err}`);
+    }
+  }
+);
+
 export const todoSlice = createSlice({
   name: "todos",
   initialState,
@@ -76,9 +91,6 @@ export const todoSlice = createSlice({
         toggleTodo.completed = !toggleTodo.completed;
       }
     },
-    // setDeleteTodo(state, { payload }: PayloadAction<number>) {
-    //   state.todos = state.todos.filter((todo) => todo.id !== payload);
-    // },
   },
   extraReducers: (builder) => {
     //Builder с загрузкой
@@ -98,7 +110,7 @@ export const todoSlice = createSlice({
     //Builder в случае ошибки
     builder.addCase(
       fetchTodos.rejected,
-      (state, { payload }: PayloadAction<unknown | string>) => {
+      (state, { payload }: PayloadAction<string>) => {
         state.error = payload;
         state.loading = false;
       }
@@ -119,6 +131,21 @@ export const todoSlice = createSlice({
         }
       }
     );
+
+    builder.addCase(
+      deleteAsyncTodo.fulfilled,
+      (state, { payload }: PayloadAction<any | string>) => {
+        state.todos = state.todos.filter((todo) => todo.id !== payload);
+      }
+    );
+
+    builder.addMatcher(
+      setError,
+      (state, { payload }: PayloadAction<string>) => {
+        state.error = payload;
+        state.loading = false;
+      }
+    );
   },
 });
 
@@ -128,4 +155,9 @@ export const todoExtraReducer = {
   fetchTodos,
   setAsyncTodos,
   toggleTodoComplete,
+  deleteAsyncTodo,
+};
+
+const setError = ({ type }: AnyAction) => {
+  return type.endsWith("Rejected");
 };

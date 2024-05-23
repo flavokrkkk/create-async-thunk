@@ -9,7 +9,7 @@ import { Container } from "react-bootstrap";
 const TodoPage = () => {
   const [title, setTitle] = useState("");
 
-  const { todos } = useAppSelector(TodoSelectors);
+  const { todos, loading, error } = useAppSelector(TodoSelectors);
   const { setAsyncTodos, fetchTodos } = useActions();
 
   const handleAddTodo = () => {
@@ -34,9 +34,12 @@ const TodoPage = () => {
         handleAddTodo={handleAddTodo}
         handleChangeEvent={handleChangeEvent}
       />
-      {todos.map((todo) => (
-        <TodoItem {...todo} key={todo.id} />
-      ))}
+      {loading ? (
+        <h1>Loading...</h1>
+      ) : (
+        todos.map((todo) => <TodoItem {...todo} key={todo.id} />)
+      )}
+      {error && <h1>{error}</h1>}
     </Container>
   );
 };

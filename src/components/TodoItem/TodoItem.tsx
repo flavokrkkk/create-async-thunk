@@ -16,10 +16,10 @@ interface TodoItemProps {
 }
 
 const TodoItem: FC<TodoItemProps> = ({ id, title, completed }) => {
-  const { setDeleteTodo, setCompletedTodo } = useActions();
+  const { deleteAsyncTodo, setCompletedTodo } = useActions();
 
   const handleDeleteTodo = () => {
-    setDeleteTodo(id);
+    deleteAsyncTodo(id);
   };
 
   const toggleCompleteTodo = () => {
